@@ -9,6 +9,11 @@ import cv2
 # -3 3 ambos ejes
 # enteros
 
+def amap(x, in_min, in_max, out_min, out_max):
+    m = (out_max - out_min) / (in_max - in_min)
+
+    return (x - in_min) * m + out_min
+
 
 color_ranges = [
     ((12, 35, 128), (56, 255, 255), "amarillo"),
@@ -41,14 +46,17 @@ while True:
 
                 (cX, cY) = (int(M['m10'] / M['m00']), int(M['m01'] / M['m00']))
 
+                map_x = round(amap(cX, 0, frame.shape[1], -3, 3))
+                map_y = round(amap(cY, 0, frame.shape[0], 3, -3))
+
                 if radius > 10:
                     cv2.circle(frame, (int(x), int(y)),
                                int(radius), (0, 255, 0), 2)
 
-                    cv2.putText(frame, 'x: {}'.format(cX), (cX + 10, cY - 20),
+                    cv2.putText(frame, 'x: {}'.format(map_x), (cX + 10, cY - 20),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
-                    cv2.putText(frame, 'y: {}'.format(cY), (cX + 10, cY),
+                    cv2.putText(frame, 'y: {}'.format(map_y), (cX + 10, cY),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
                     cv2.putText(
